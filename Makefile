@@ -1,8 +1,8 @@
 NAME = pipex
 
-CC = gcc
+CC = cc
 
-CFLAGS = -Werror -Wall -Wextra
+CFLAGS = -Wall -Werror -Wextra
 
 RM = rm -rf
 
@@ -22,7 +22,7 @@ fclean : clean
 	make fclean -C libft
 
 clean :
-	$(RM) $(NAME)
+	$(RM)
 	make clean -C libft
 
 re : fclean all

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: beinan <beinan@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/27 14:55:35 by beinan            #+#    #+#             */
-/*   Updated: 2025/02/27 14:59:39 by beinan           ###   ########.fr       */
+/*   Created: 2025/02/27 15:04:34 by beinan            #+#    #+#             */
+/*   Updated: 2025/03/04 18:20:04 by beinan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,21 @@ void	exec(char *cmd, char **env)
 	char	*path;
 
 	s_cmd = ft_split(cmd, ' ');
+	if (!s_cmd[0] || !s_cmd)
+	{
+		free_all(s_cmd);
+		err("command not found: ", cmd, 127);
+	}
 	path = get_path(s_cmd[0], env);
+	if (path == 0)
+	{
+		free_all(s_cmd);
+		err("command not found: ", cmd, 127);
+	}
 	if (execve(path, s_cmd, env) == -1)
 	{
-		ft_putstr_fd("pipex: command not found: ", 2);
-		ft_putendl_fd(s_cmd[0], 2);
-		ft_free_tab(s_cmd);
-		exit(0);// bu 1 olmalı?????
+		free_all(s_cmd);
+		err("command not found: ", cmd, 127);
 	}
 }
 
@@ -56,13 +64,21 @@ int	main(int ac, char **av, char **env)
 	pid_t	pid;
 
 	if (ac != 5)
-		exit_handler(1);
+	{
+		write(2,"Error: Insufficient argument.\n", 30);
+		exit(0);
+	}
+	if (ft_strcmp(av[2], "") == 0)
+		err("permission denied: ", av[2], 126);
+	if (ft_strcmp(av[3], "") == 0)
+		err("permission denied: ", av[3], 126);
 	if (pipe(p_fd) == -1)
-		exit(-1);
+		err("pipe error", "", 1);
 	pid = fork();
 	if (pid == -1)
-		exit(-1);
-	if (!pid)
+		err("Fork error!", "", 1);
+	if (pid == 0)
 		child(av, p_fd, env);
+	waitpid(-1, NULL, 0);
 	parent(av, p_fd, env);
 }

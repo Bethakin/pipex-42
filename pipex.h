@@ -5,29 +5,32 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: beinan <beinan@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/27 14:55:35 by beinan            #+#    #+#             */
-/*   Updated: 2025/02/27 14:57:00 by beinan           ###   ########.fr       */
+/*   Created: 2025/02/27 15:04:43 by beinan            #+#    #+#             */
+/*   Updated: 2025/03/04 18:20:42 by beinan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include "../libft/libft.h"
-# include <unistd.h>
-# include <stdio.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include<sys/types.h>
-# include<sys/stat.h>
-# include <fcntl.h>  
+# include "libft/libft.h"
 # include <stdlib.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <sys/wait.h>
+# include <stdio.h>
+# include <errno.h>
+
+# define ERR_INFILE "unavalilable input file"
+# define ERR_OUTFILE "unavalilable output file"
 
 int		open_file(char *file, int n);
 char	*my_getenv(char *name, char **env);
 char	*get_path(char *cmd, char **env);
 void	exec(char *cmd, char **env);
-void	ft_free_tab(char **tab);
-void	exit_handler(int n_exit);
+void	free_all(char **tab);
+int		ft_strcmp(const char *s1, const char *s2);
+void	err(char *err, char *a, int exit_code);
+void	command_check(char *arg);
 
 #endif

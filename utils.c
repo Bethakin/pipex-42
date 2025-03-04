@@ -6,43 +6,57 @@
 /*   By: beinan <beinan@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:04:49 by beinan            #+#    #+#             */
-/*   Updated: 2025/02/27 15:31:57 by beinan           ###   ########.fr       */
+/*   Updated: 2025/03/04 18:21:05 by beinan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	exit_handler(int n_exit)
+
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	if (n_exit == 1)
-		write(2, "Error\n", 6);
-	exit(1);
-}
+	unsigned int	i;
+	unsigned char	*str1;
+	unsigned char	*str2;
 
-int	open_file(char *file, int in_or_out)
-{
-	int	ret;
-
-	if (in_or_out == 0)
-		ret = open(file, O_RDONLY, 0777);
-	if (in_or_out == 1)
-		ret = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if (ret == -1)
-		exit(0);
-	return (ret);
-}
-
-void	ft_free_tab(char **tab)
-{
-	size_t	i;
-
+	str1 = (unsigned char *)s1;
+	str2 = (unsigned char *)s2;
 	i = 0;
-	while (tab[i])
+	while (str1[i] != '\0' || str2[i] != '\0')
 	{
-		free(tab[i]);
+		if ((str1[i] < str2[i]) || (str1[i] > str2[i]))
+			return (str1[i] - str2[i]);
 		i++;
 	}
-	free(tab);
+	return (0);
+}
+
+int open_file(char *filename, int in_out)
+{
+	int x;
+
+	if (in_out == 0) 
+		x = open(filename, O_RDONLY);
+	if (x < 0)
+		err(ERR_INFILE, "", 1);
+	if (in_out == 1)
+		x = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (x < 0)
+		err("unavalilable output file", "", 1);
+	return (x);
+}
+
+void	free_all(char **str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		free(str[i]);
+		i++;
+	}
+	free(str);
 }
 
 char	*my_getenv(char *name, char **env)
@@ -77,22 +91,24 @@ char	*get_path(char *cmd, char **env)
 	char	*path_part;
 	char	**s_cmd;
 
-	i = -1;
+	i = 0;
 	allpath = ft_split(my_getenv("PATH", env), ':');
 	s_cmd = ft_split(cmd, ' ');
-	while (allpath[++i])
+	while (allpath[i] != NULL)
 	{
 		path_part = ft_strjoin(allpath[i], "/");
 		exec = ft_strjoin(path_part, s_cmd[0]);
 		free(path_part);
 		if (access(exec, F_OK | X_OK) == 0)
 		{
-			ft_free_tab(s_cmd);
+			free_all(allpath);
+			free_all(s_cmd);
 			return (exec);
 		}
+		i++;
 		free(exec);
 	}
-	ft_free_tab(allpath);
-	ft_free_tab(s_cmd);
+	free_all(allpath);
+	free_all(s_cmd);
 	return (cmd);
 }
