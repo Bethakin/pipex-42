@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beinan <beinan@student.42.fr>              +#+  +:+       +#+        */
+/*   By: beinan <beinan@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:04:43 by beinan            #+#    #+#             */
-/*   Updated: 2025/03/04 18:20:42 by beinan           ###   ########.fr       */
+/*   Updated: 2025/03/06 20:57:33 by beinan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,11 @@
 # include <stdio.h>
 # include <errno.h>
 
-# define ERR_INFILE "unavalilable input file"
-# define ERR_OUTFILE "unavalilable output file"
-
 int		open_file(char *file, int n);
+size_t	where_is(char *arg, char needle);
+void	validate_command(char *cmd, char **s_cmd);
+void	child(char **av, int *p_fd, char **env);
+void	parent(char **av, int *p_fd, char **env);
 char	*my_getenv(char *name, char **env);
 char	*get_path(char *cmd, char **env);
 void	exec(char *cmd, char **env);

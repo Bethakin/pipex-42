@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beinan <beinan@student.42.fr>              +#+  +:+       +#+        */
+/*   By: beinan <beinan@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 15:04:49 by beinan            #+#    #+#             */
-/*   Updated: 2025/03/04 18:21:05 by beinan           ###   ########.fr       */
+/*   Updated: 2025/03/06 20:57:37 by beinan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
@@ -31,18 +30,25 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (0);
 }
 
-int open_file(char *filename, int in_out)
+int	open_file(char *filename, int in_out)
 {
-	int x;
+	int	x;
 
-	if (in_out == 0) 
+	x = 0 ;
+	if (in_out == 0)
 		x = open(filename, O_RDONLY);
 	if (x < 0)
-		err(ERR_INFILE, "", 1);
+	{
+		perror("Error");
+		exit(1);
+	}
 	if (in_out == 1)
 		x = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (x < 0)
-		err("unavalilable output file", "", 1);
+	{
+		perror("Error");
+		exit(1);
+	}
 	return (x);
 }
 
@@ -100,11 +106,7 @@ char	*get_path(char *cmd, char **env)
 		exec = ft_strjoin(path_part, s_cmd[0]);
 		free(path_part);
 		if (access(exec, F_OK | X_OK) == 0)
-		{
-			free_all(allpath);
-			free_all(s_cmd);
-			return (exec);
-		}
+			return (free_all(allpath), free_all(s_cmd), exec);
 		i++;
 		free(exec);
 	}

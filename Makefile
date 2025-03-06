@@ -8,6 +8,7 @@ RM = rm -rf
 
 SRCS = 	pipex.c\
 		utils.c\
+		errors.c\
 		libft/libft.a\
 
 $(NAME) :
